@@ -18,6 +18,8 @@ class BookmarkController extends Controller
      */
     public function index()
     {
+        $user = $this->currentUser();
+        
         return $user->bookmarks;
     }
 
