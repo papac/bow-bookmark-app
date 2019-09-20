@@ -3,7 +3,7 @@
 use Bow\Database\Migration\Migration;
 use Bow\Database\Migration\SQLGenerator;
 
-class Version20190916165657CreateBookmarksTable extends Migration
+class Version20190920132101CreateBookmarksTable extends Migration
 {
     /**
      * Up Migration
@@ -15,7 +15,7 @@ class Version20190916165657CreateBookmarksTable extends Migration
             $table->addString('link');
             $table->addString('description');
             $table->addInteger('user_id');
-            $this->addString('tags');
+            $table->addString('tags');
             $table->addForeign('user_id', [
                 'table' => 'users',
                 'references' => 'id',
