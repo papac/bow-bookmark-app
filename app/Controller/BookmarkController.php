@@ -6,9 +6,12 @@ use App\Controller\Controller;
 use App\Exception\NotFoundUserException;
 use Bow\Http\Request;
 use App\Model\User;
+use App\Traits\ResponseTrait;
 
 class BookmarkController extends Controller
 {
+    use ResponseTrait;
+
     /**
      * Start point
      *
@@ -35,13 +38,17 @@ class BookmarkController extends Controller
     {
         $user = $this->currentUser();
 
-        $bookmark = Bookmark::create([
+        $data = [
             'link' => $request->link,
             'description' => $request->description,
             'user_id' => $request->user_id,
             'tags' => $request->tags,
             'user_id' => $user->id
-        ]);
+        ];
+
+        $bookmark = Bookmark::create($data);
+
+        return $this->makeResponse('ok', $data);
     }
 
     /**
@@ -58,7 +65,7 @@ class BookmarkController extends Controller
 
         $bookmark = $user->bookmarks()->where('id', $id)->first();
 
-        return $bookmark;
+        return $this->makeResponse('ok', $bookmark);
     }
 
     /**
@@ -84,6 +91,8 @@ class BookmarkController extends Controller
         ]);
 
         $bookmark->touch();
+
+        return $this->makeResponse('ok', $bookmark);
     }
 
     /**
@@ -101,6 +110,8 @@ class BookmarkController extends Controller
         $bookmark = $user->bookmarks()->where('id', $id)->first();
 
         $bookmark->delete();
+
+        return $this->makeResponse('ok', $bookmark);
     }
 
     /**

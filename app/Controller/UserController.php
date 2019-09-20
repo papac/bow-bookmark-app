@@ -4,9 +4,13 @@ namespace App\Controller;
 
 use App\Controller\Controller;
 use Bow\Http\Request;
+use App\Model\User;
+use App\Traits\ResponseTrait;
 
 class UserController extends Controller
 {
+    use ResponseTrait;
+
     /**
      * Create the new user
      * 
@@ -28,20 +32,11 @@ class UserController extends Controller
         $user->save();
         $token = $user->generateToken();
 
-        // Send response to user
-        return json([
-            'status' => ['code' => 200, 'message' => 'Ok', 'success' => true],
-            'data' => [
-                'access_token' => $token->getToken(),
-                'expirate_at' => $token->expireIn(),
-                'user' => $user
-            ]
+        return $this->makeResponse('Ok', [
+            'access_token' => $token->getToken(),
+            'expirate_at' => $token->expireIn(),
+            'user' => $user
         ]);
-    }
-
-    public function current()
-    {
-
     }
 
     /**
@@ -55,7 +50,7 @@ class UserController extends Controller
         return new User([
             'id' => null,
             'name' => $request->name,
-            'description' => $request->text,
+            'description' => $request->description,
             'email' => $request->email,
             'password' => bhash($request->password),
             'created_at' => date('Y-m-d H:i:s'),

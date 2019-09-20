@@ -11,6 +11,12 @@
  *
  * Follow the following example, it gives you an overview on how it works in general.
  */
-$app->get('/', function () {
-    return response()->render('welcome');
+$app->get('/status', function () {
+    return ['status' => 'ok'];
 });
+
+$app->post('/auth', 'AuthController::make');
+$app->post('/register', 'UserController::create');
+
+$app->middleware('policier');
+$app->rest('/bookmarks', 'BookmarkController');

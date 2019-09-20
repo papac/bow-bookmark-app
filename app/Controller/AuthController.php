@@ -5,9 +5,12 @@ namespace App\Controller;
 use App\Controller\Controller;
 use App\Model\User;
 use Bow\Http\Request;
+use App\Traits\ResponseTrait;
 
-class HomeController extends Controller
+class AuthController extends Controller
 {
+    use ResponseTrait;
+
     /**
      * Show index
      *
@@ -19,32 +22,17 @@ class HomeController extends Controller
         $user = User::where('email', $request->get('email'))->first();
 
         // Check user password
-        if (!bhash($request->get('password'), $user->password)) {
-            return json([
-                'status' => [
-                    'code' => 404,
-                    'message' => 'Your credentials is invalid.',
-                    'success' => false
-                ],
-                'data' => []
-            ]);
+        if (is_null($user) || !bhash($request->get('password'), $user->password)) {
+            return $this->makeResponse('Your credentials is invalid.', false);
         }
 
         // Generate the token
         $token = $user->generateToken();
 
-        // Send response to user
-        return json([
-            'status' => [
-                'code' => 200,
-                'message' => 'Ok',
-                'success' => true
-            ],
-            'data' => [
-                'access_token' => $token->getToken(),
-                'expirate_at' => $token->expireIn(),
-                'user' => $user
-            ]
+        return $this->makeResponse('Ok', [
+            'access_token' => $token->getToken(),
+            'expirate_at' => $token->expireIn(),
+            'user' => $user
         ]);
     }
 }

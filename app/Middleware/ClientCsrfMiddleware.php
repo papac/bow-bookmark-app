@@ -13,6 +13,7 @@ class ClientCsrfMiddleware extends CsrfMiddleware
     public function preventOn()
     {
         return [
+        	"/*"
         ];
     }
 }
